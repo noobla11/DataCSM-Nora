@@ -38,7 +38,9 @@ HOBOmin <- HOBO %>%
                  ymd_hms('2020-12-20 23:50:00')))%>%
   add_column(id = 1:3024, .before = T)
 
-#write.csv(HOBOmin, file = "10350017.csv", row.names = F)
+Sys.timezone(location = T)
+
+#write.csv(HOBOmin, file = "10350017.csv", row.names = F, quote = F)
 
 #separate data for later use 
 HOBOfull <- HOBOmin %>% 
