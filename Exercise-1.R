@@ -59,3 +59,6 @@ HOBOcheck <- HOBOfull %>%
   mutate(Flag = case_when((temp < -20) ~ FALSE,
                           (temp < 70 & temp > -20) ~ TRUE,
                           (temp > 70) ~ FALSE))
+
+
+  
