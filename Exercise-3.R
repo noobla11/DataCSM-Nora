@@ -61,14 +61,14 @@ mean(day_temp$t_dif)
 #1.3 Most rapid temperature change TΔ6h-----------------------------------------
 dif <- function(x) abs(diff(range(x)))
 
-test <-HOBOhour %>%  
+HOBOmax <- HOBOhour %>%  
   mutate(t06 = rollapply(th,
                          width = 6,
                          FUN = dif, 
                          fill = 0,
                          align = "left"))
 
-max(test$t06)
+max(HOBOmax$t06)
 
 #t_6h (Most rapid temperature change in 6 hours) = 6.514
 
@@ -113,9 +113,40 @@ HOBO_lux %>%
   group_by(hour, minute) %>% 
   summarise(mean_lux = mean(lux)) %>% 
   arrange(desc(mean_lux))
-  
-  
-
 
 #l_avg 	(Mean light intensity	lux)                      = 2511.5
 #l_max	(Hour:Minute of maximum light intensity	hh:mm)  = 12:30
+
+
+#4. Comparison with a long-term average-----------------------------------------
+#import the data 
+
+DWD_long <- read_delim("air_temp_19970701_20191231_03379.txt", 
+                        ";", escape_double = FALSE, trim_ws = TRUE)
+
+DWD_long <- DWD_long %>%
+  select(MESS_DATUM, TT_TU) %>% 
+  set_colnames(c("date_time","th")) %>% 
+  mutate(date_time = parse_date_time(date_time, orders = "YmdH")) %>% 
+  mutate(date = date(date_time),
+         day = day(date_time),
+         month = month(date_time),
+         day_month = format(date_time, format = "%m %d"))
+
+DWD_long_trunc <- DWD_long %>%
+  mutate(Period = if_else(between(day_month,"11 30","12 21"), "P", "I"))
+                          
+                          
+head(DWD_long)
+
+#prepare HOBO date 
+HOBO_comp <- HOBOhour %>% 
+  select("date_time","th")
+
+
+
+
+
+
+
+

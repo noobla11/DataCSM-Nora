@@ -205,6 +205,7 @@ HOBO_Th <- HOBOhour %>%
   mutate(origin = ifelse(is.na(temp),"R","H")) %>% 
   mutate(th = ifelse(is.na(temp),predict(lm_WBI,newdata = WBI_df),temp)) %>% 
   mutate(th = round(th, 3)) %>% 
-  select(date_time, th, origin)
-  
+  select(date_time, th, origin) %>% 
+  rename(date = date_time)
+
 #write.csv(HOBO_Th, file = "10350017_Th.csv", row.names = F, quote = F)
