@@ -98,13 +98,24 @@ HOBO_lux %>%
   ungroup()
 
 HOBO_lux <- HOBO_lux %>% 
-  mutate(date = date(date_time),
-         minute = minute(date_time)) %>% 
-  group_by(date, minute) %>% 
-  summarise(mean(lux)) %>% 
-  ungroup()
+  mutate(hour_minute = format(date_time, format = "%H:%M:%S"),
+         hour = hour(date_time),
+         minute = minute(date_time),
+         date = date(date_time))
+
+HOBO_lux %>% 
+  group_by(hour_minute) %>% 
+  summarise(mean_lux = mean(lux)) %>% 
+  arrange(desc(mean_lux))
+
+#OR
+HOBO_lux %>% 
+  group_by(hour, minute) %>% 
+  summarise(mean_lux = mean(lux)) %>% 
+  arrange(desc(mean_lux))
+  
   
 
 
 #l_avg 	(Mean light intensity	lux)                      = 2511.5
-#l_max	(Hour:Minute of maximum light intensity	hh:mm)  =
+#l_max	(Hour:Minute of maximum light intensity	hh:mm)  = 12:30
