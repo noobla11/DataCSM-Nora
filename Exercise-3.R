@@ -121,43 +121,28 @@ HOBO_lux %>%
 #4. Comparison with a long-term average-----------------------------------------
 #import the data 
 
-DWD_long <- read_delim("air_temp_19970701_20191231_03379.txt", 
+DWD_long <- read_delim("air_temp_19510101_20191231_01443.txt", 
                         ";", escape_double = FALSE, trim_ws = TRUE)
 
 DWD_lon <- DWD_long %>%
   select(MESS_DATUM, TT_TU) %>% 
   set_colnames(c("date_time","th")) %>% 
   mutate(date_time = parse_date_time(date_time, orders = "Ymdh")) %>% 
-  mutate(date = format(date_time, format = as.Date("%Y-%m-%d")),
-         time = format(date_time, format = "%H:%M:%S"),
+  mutate(day = day(date_time),
          month = month(date_time),
-         year = year(date_time))
-head(DWD_lon)
+         year = year(date_time)) %>% 
+  filter(year(date_time)>=1999 & year(date_time)<=2019) #to have only 20 years
 
 DWD_lon_trunc <- DWD_lon %>% 
-  filter(between(ymd_hms(date_time), 
-                 ymd_hms('1999-11-30 00:00:00'), 
-                 ymd_hms('2019-12-20 23:50:00')))
+  group_by(year) %>% 
+  filter(month(date_time)==11 & day(date_time)== 30 | 
+        month(date_time)== 12 & day(date_time) >=1 & day(date_time) < 21) %>% #Leons solution!  
+  ungroup()
 
-bla <- data_frame(seq(ymd_hms('2020-11-30 00:00:00'), 
-           ymd_hms('2020-12-20 23:00:00'), 
-           by = '1 hour'))
-
-#Leons solution 
-#filter(month(datetime)==11 & day(datetime)== 30 | 
-        # month(datetime)== 12 & day(datetime) >=1 & day(datetime) < 21
-       
-interval(ymd(20090201), ymd(20090101))
-date1 <- ymd_hms("2009-03-08 01:59:59")
-date2 <- ymd_hms("2000-02-29 12:00:00")
-x <- interval(date2, date1)
-#prepare HOBO date 
-HOBO_comp <- HOBOhour %>% 
-  select("date_time","th")
-
-?interval
-
-
+DWD_mean <- DWD_lon_trunc %>% 
+  select("date_time","th","year") %>% 
+  group_by(year) %>% 
+  summarise(mean = mean(th))
 
 
 
