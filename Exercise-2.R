@@ -164,7 +164,7 @@ WBI_trunc <- WBI %>%
   add_column(origin = "R")
 
 
-#join reference date -----------------------------------------------------------
+#join reference date --------------NOT necessary--------------------------------
 ref_data <- DWD_trunc %>% 
   full_join(Garden_trunc) %>% 
   full_join(DWD_Urban_trunc) %>% 

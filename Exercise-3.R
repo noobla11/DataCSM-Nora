@@ -124,24 +124,38 @@ HOBO_lux %>%
 DWD_long <- read_delim("air_temp_19970701_20191231_03379.txt", 
                         ";", escape_double = FALSE, trim_ws = TRUE)
 
-DWD_long <- DWD_long %>%
+DWD_lon <- DWD_long %>%
   select(MESS_DATUM, TT_TU) %>% 
   set_colnames(c("date_time","th")) %>% 
-  mutate(date_time = parse_date_time(date_time, orders = "YmdH")) %>% 
-  mutate(date = date(date_time),
-         day = day(date_time),
+  mutate(date_time = parse_date_time(date_time, orders = "Ymdh")) %>% 
+  mutate(date = format(date_time, format = as.Date("%Y-%m-%d")),
+         time = format(date_time, format = "%H:%M:%S"),
          month = month(date_time),
-         day_month = format(date_time, format = "%m %d"))
+         year = year(date_time))
+head(DWD_lon)
 
-DWD_long_trunc <- DWD_long %>%
-  mutate(Period = if_else(between(day_month,"11 30","12 21"), "P", "I"))
-                          
-                          
-head(DWD_long)
+DWD_lon_trunc <- DWD_lon %>% 
+  filter(between(ymd_hms(date_time), 
+                 ymd_hms('1999-11-30 00:00:00'), 
+                 ymd_hms('2019-12-20 23:50:00')))
 
+bla <- data_frame(seq(ymd_hms('2020-11-30 00:00:00'), 
+           ymd_hms('2020-12-20 23:00:00'), 
+           by = '1 hour'))
+
+#Leons solution 
+#filter(month(datetime)==11 & day(datetime)== 30 | 
+        # month(datetime)== 12 & day(datetime) >=1 & day(datetime) < 21
+       
+interval(ymd(20090201), ymd(20090101))
+date1 <- ymd_hms("2009-03-08 01:59:59")
+date2 <- ymd_hms("2000-02-29 12:00:00")
+x <- interval(date2, date1)
 #prepare HOBO date 
 HOBO_comp <- HOBOhour %>% 
   select("date_time","th")
+
+?interval
 
 
 
