@@ -101,4 +101,4 @@ JOIN mean_night AS n ON d.device_id = n.device_id
 JOIN mean_all AS a ON d.device_id = a.device_id
 FULL JOIN indices_corr ON d.meta_id = indices_corr.meta_id;
 
-SELECT * FROM indices_t ORDER BY meta_id ASC
+SELECT * FROM indices_t ORDER BY device_id ASC
